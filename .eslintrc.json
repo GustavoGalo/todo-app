@@ -35,7 +35,26 @@
     "react-hooks/exhaustive-deps": "warn",
     "import/prefer-default-export": "off",
     "react/prop-types": "off",
-    "react/jsx-one-expression-per-line": "off"
+    "react/jsx-one-expression-per-line": "off",
+    "arrow-parens": "off",
+    "react/function-component-definition": [
+      2,
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ],
+    "object-curly-newline": [
+      "error",
+      {
+        "ImportDeclaration": { "consistent": true, "multiline": true }
+      }
+    ],
+    "operator-linebreak": [0],
+    "no-confusing-arrow": [0],
+    "implicit-arrow-linebreak": "off",
+    "indent": ["error", 2, { "ignoredNodes": ["ConditionalExpression"] }],
+    "no-nested-ternary": "off"
   },
   "settings": {
     "import/resolver": {
