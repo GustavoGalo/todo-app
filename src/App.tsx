@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import { Draggable } from 'react-beautiful-dnd';
 import { useTheme } from './hooks/theme';
 import { ThemeSwitcher } from './components/ThemeSwitcher';
 import { TodoBar } from './components/TodoBar';
@@ -98,14 +99,20 @@ const App = () => {
         />
         <TodoList>
           {todoList.map(({ completed, label }, index) => (
-            <TodoItem
-              key={label}
-              label={label}
-              selected={completed}
-              isFisrtItem={index === 0}
-              onRadioClick={() => toggleTodoItemCompleted(index)}
-              onRemove={() => handleRemoveTodo(index)}
-            />
+            <Draggable key={label} draggableId={`${index}`} index={index}>
+              {() => (
+                <div>
+                  <TodoItem
+                    key={label}
+                    label={label}
+                    selected={completed}
+                    isFisrtItem={index === 0}
+                    onRadioClick={() => toggleTodoItemCompleted(index)}
+                    onRemove={() => handleRemoveTodo(index)}
+                  />
+                </div>
+              )}
+            </Draggable>
           ))}
           <StatsTodoItem
             itemsLeft={
