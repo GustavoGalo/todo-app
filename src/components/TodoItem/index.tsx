@@ -15,7 +15,7 @@ import {
 interface ITodoItemProps {
   label: string;
   selected: boolean;
-  isFisrtItem: boolean;
+  isFirstItem: boolean;
   onRadioClick: () => void;
   onRemove: () => void;
 }
@@ -23,11 +23,11 @@ interface ITodoItemProps {
 export const TodoItem: React.FC<ITodoItemProps> = ({
   label,
   selected,
-  isFisrtItem,
+  isFirstItem,
   onRadioClick,
   onRemove,
 }) => (
-  <Container checked={selected} isFisrtItem={isFisrtItem}>
+  <Container checked={selected} isFirstItem={isFirstItem}>
     <BorderRadio onClick={onRadioClick}>
       <Radio>
         <CheckMarkWrapper>

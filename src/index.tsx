@@ -4,10 +4,14 @@ import App from './App';
 
 import { GlobalStyles } from './styles/globalStyles';
 import { Theme } from './hooks/theme';
+import { TodoProvider } from './hooks/todo';
 
 ReactDOM.render(
   <Theme>
-    <App />
+    <TodoProvider>
+      <App />
+    </TodoProvider>
+
     <GlobalStyles />
   </Theme>,
   document.getElementById('root'),

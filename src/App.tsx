@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect, useState } from 'react';
 
 import { Draggable } from 'react-beautiful-dnd';
@@ -16,22 +17,23 @@ import {
   HeadText,
   FooterLabel,
 } from './styles';
-import { ITodo } from './interfaces/ITodo';
 import { setTodoListOnLocalStorage } from './controllers/setTodoListOnLocalStorage';
 import { StatsTodoItem } from './components/StatsTodoItem';
 import { Filters } from './components/ListFooter/types';
 import { ListFooter } from './components/ListFooter';
+import { todoFormatter } from './helpers/todoFormatter';
+import { useTodo } from './hooks/todo';
 
 const App = () => {
   const { theme } = useTheme();
-  const [todoList, setTodoList] = useState<ITodo[]>([]);
+  const { todoList, updateTodoList } = useTodo();
   const [todoBarLabel, setTodoBarLabel] = useState('');
   const [filter, setFilter] = useState<Filters>('all');
 
   useEffect(() => {
     const todoListData = getTodoItemsFromLocalStorage();
 
-    setTodoList(todoListData);
+    updateTodoList(todoListData);
   }, []);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const App = () => {
         ? todoListData.filter((todo) => !todo.completed)
         : todoListData.filter((todo) => todo.completed);
 
-    setTodoList(filteredTodoListData);
+    updateTodoList(filteredTodoListData);
   }, [filter]);
 
   const handleNewTodo = () => {
@@ -51,8 +53,8 @@ const App = () => {
       ...todoList,
       { completed: false, label: todoBarLabel },
     ];
-    setTodoListOnLocalStorage(newTodoListData);
-    setTodoList(newTodoListData);
+    setTodoListOnLocalStorage(todoFormatter(newTodoListData));
+    updateTodoList(todoFormatter(newTodoListData));
     setTodoBarLabel('');
   };
 
@@ -64,13 +66,13 @@ const App = () => {
     }
 
     setTodoListOnLocalStorage(newTodoListData);
-    setTodoList(newTodoListData);
+    updateTodoList(newTodoListData);
   };
 
   const clearCompletedTodos = () => {
     const newTodoListData = todoList.filter((todo) => !todo.completed);
 
-    setTodoList(newTodoListData);
+    updateTodoList(newTodoListData);
   };
 
   const handleRemoveTodo = (index: number) => {
@@ -79,7 +81,7 @@ const App = () => {
     );
 
     setTodoListOnLocalStorage(newTodoList);
-    setTodoList(newTodoList);
+    updateTodoList(newTodoList);
   };
 
   return (
@@ -98,15 +100,27 @@ const App = () => {
           onAddNewTodo={handleNewTodo}
         />
         <TodoList>
-          {todoList.map(({ completed, label }, index) => (
-            <Draggable key={label} draggableId={`${index}`} index={index}>
-              {() => (
-                <div>
+          {todoList.map(({ completed, label, id }, index) => (
+            <Draggable
+              key={id}
+              draggableId={id || index.toString()}
+              index={index}
+            >
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  style={{
+                    background: snapshot.isDragging ? 'lightblue' : 'white',
+                    ...provided.draggableProps.style,
+                  }}
+                >
                   <TodoItem
-                    key={label}
+                    key={id}
                     label={label}
                     selected={completed}
-                    isFisrtItem={index === 0}
+                    isFirstItem={index === 0}
                     onRadioClick={() => toggleTodoItemCompleted(index)}
                     onRemove={() => handleRemoveTodo(index)}
                   />
@@ -114,13 +128,11 @@ const App = () => {
               )}
             </Draggable>
           ))}
-          <StatsTodoItem
-            itemsLeft={
-              todoList.filter((todo) => todo.completed === false).length
-            }
-            onClearCompleted={clearCompletedTodos}
-          />
         </TodoList>
+        <StatsTodoItem
+          itemsLeft={todoList.filter((todo) => todo.completed === false).length}
+          onClearCompleted={clearCompletedTodos}
+        />
         <ListFooter listBy={filter} onChangeFilter={setFilter} />
         <FooterLabel>Drag and drop to reorder list</FooterLabel>
       </TodoWrapper>

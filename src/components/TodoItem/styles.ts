@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 interface IContainerProps {
   checked: boolean;
-  isFisrtItem: boolean;
+  isFirstItem: boolean;
 }
 
 export const BorderRadio = styled.div`
@@ -62,8 +62,8 @@ export const Container = styled.div<IContainerProps>`
   background-color: ${(props) => props.theme.colors.cardBackground};
 
   border-bottom: 1px solid ${(props) => props.theme.colors.disable};
-  border-top-left-radius: ${(props) => props.isFisrtItem && '0.25rem'};
-  border-top-right-radius: ${(props) => props.isFisrtItem && '0.25rem'};
+  border-top-left-radius: ${(props) => props.isFirstItem && '0.25rem'};
+  border-top-right-radius: ${(props) => props.isFirstItem && '0.25rem'};
 
   display: flex;
   align-items: center;
